@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// مدل کاربر - نماینده "اکانت" یا "userHome"
+model User {
+  id          Int     @id @default(autoincrement()) // آیدی یکتا
+  firstName   String
+  lastName    String
+  phoneNumber String  @unique
+  email       String? @unique
+  isAdmin     Boolean @default(false)
+  token       String
+
+  otp   Otp? @relation(fields: [otpId], references: [id]) // ارتباط با Otp
+  otpId Int? @unique // یکتا شدن برای One-to-One
+
+  wallet  Wallet  @relation(fields: [walletId], references: [id])
+  balance Decimal @default(0.0) // موجودی کیف پول
+
+  seller   Seller
+  walletId Int
+}
+
+model Otp {
+  id        Int      @id @default(autoincrement()) // آیدی
+  code      String // کد یکبار مصرف
+  expiresAt DateTime // زمان انقضا
+  user      User? // ارتباط با کاربر (اختیاری)
+}
+
+model Wallet {
+  id      Int     @id @default(autoincrement()) // آیدی کیف پول
+  balance Decimal @default(0.0) // موجودی کیف پول
+  user    User    @relation(fields: [userId], references: [id]) // ارتباط با کاربر
+  userId  Int     @unique // تضمین ارتباط یک‌به‌یک
+}
+
+model Seller {
+  id       Int    @id @default(autoincrement()) // آیدی فروشنده
+  shopName String // نام فروشگاه
+  user     User   @relation(fields: [userId], references: [id]) // ارتباط با کاربر
+  userId   Int    @unique // تضمین ارتباط یک‌به‌یک
+}
