@@ -1,23 +1,39 @@
+"use client";
+
 import { Link } from "@heroui/link";
 import { Snippet } from "@heroui/snippet";
 import { Code } from "@heroui/code";
 import { button as buttonStyles } from "@heroui/theme";
+import { redirect } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
-import Card from "./card/page";
-import Wallet from "./wallet/page";
-import Account from "./account/page";
-import Support from "./support/page";
 
 export default function Home() {
+  redirect("/card");
+
   return (
-    <>
-      <Card />
-      <Wallet />
-      <Account />
-      <Support />
-    </>
+    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <div className="flex gap-3">
+        <Link
+          isExternal
+          className={buttonStyles({
+            color: "primary",
+            radius: "full",
+            variant: "shadow",
+          })}
+          href={siteConfig.links.docs}
+        >
+          Documentation
+        </Link>
+      </div>
+
+      <div className="mt-8">
+        <Snippet hideCopyButton hideSymbol variant="bordered">
+          <span>
+            Get started by editing <Code color="primary">app/page.tsx</Code>
+          </span>
+        </Snippet>
+      </div>
+    </section>
   );
 }
