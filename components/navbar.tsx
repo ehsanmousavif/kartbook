@@ -16,7 +16,7 @@ import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
   const pathname = usePathname();
-  const [content, setContent] = useState(<h1>در حال بارگذاری...</h1>);
+  const [content, setContent] = useState();
 
   useEffect(() => {
     switch (pathname) {
@@ -31,6 +31,8 @@ export const Navbar = () => {
         break;
       case "/support":
         setContent("پشتیبانی");
+      case "/create-card":
+        setContent("ایجاد کارت");
         break;
       default:
         setContent("صفحه مورد نظر پیدا نشد");
