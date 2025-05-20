@@ -5,7 +5,7 @@ import BankCard from "./bankCard";
 
 export default function CreateCard({}) {
   const [cardNumber, setCardNumber] = useState<boolean>(true);
-
+  const [bankCards, setBankCards] = useState<boolean>(false);
   const [value, setValue] = useState("");
 
   function setInput(e) {
@@ -33,13 +33,14 @@ export default function CreateCard({}) {
             isDisabled={value.length < 16}
             onPress={() => {
               setCardNumber(false);
+              setBankCards(true);
             }}
           >
             تایید
           </Button>
         </div>
       )}
-      {<BankCard CardNumber={value} />}
+      <div>{bankCards && <BankCard CardNumber={value} />}</div>
     </div>
   );
 }
