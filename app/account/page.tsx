@@ -1,9 +1,5 @@
 import { title } from "@/components/primitives";
+import { db } from "@/lib/prisma";
 
 export default function Account() {
-  return (
-    <div>
-      <h1 className={title()}>Docs</h1>
-    </div>
-  );
 }

@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.7.0
- * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
+ * Prisma Client JS version: 6.8.2
+ * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
  */
 Prisma.prismaVersion = {
-  client: "6.7.0",
-  engine: "3cff47a7f5d65c3ea74883f1d736e41d68ce91ed"
+  client: "6.8.2",
+  engine: "2060c79ba17c6bb9f5823312b6f6b7f4a845738e"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -119,27 +119,10 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  fullName: 'fullName',
-  phoneNumber: 'phoneNumber',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.CardScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  cardNumber: 'cardNumber',
-  bankName: 'bankName',
+  email: 'email',
+  name: 'name',
   createdAt: 'createdAt',
-  isActive: 'isActive'
-};
-
-exports.Prisma.TransactionScalarFieldEnum = {
-  id: 'id',
-  cardId: 'cardId',
-  amount: 'amount',
-  transactionType: 'transactionType',
-  description: 'description',
-  createdAt: 'createdAt'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -154,9 +137,7 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  User: 'User',
-  Card: 'Card',
-  Transaction: 'Transaction'
+  User: 'User'
 };
 
 /**
