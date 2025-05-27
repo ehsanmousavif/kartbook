@@ -1,69 +1,114 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client"; // User تایپ را هم ایمپورت می‌کنیم
 
 // یک نمونه از PrismaClient ایجاد می‌کنیم
 const prisma = new PrismaClient();
 
+// داده‌های نمونه برای کاربران مطابق با مدل User شما
+// مهم: phoneNumber باید یکتا باشد. email و cardNumber هم اگر مقداردهی شوند، باید یکتا باشند.
+const usersToSeed: Omit<
+  User,
+  "id" | "createdAt" | "updatedAt" | "otpId" | "wallet" | "seller" | "otp"
+>[] = [
+  // Omit برای این است که id و فیلدهای اتوماتیک یا رابطه‌ای را در داده‌های اولیه نخواهیم
+  {
+    firstName: "علی",
+    lastName: "محمدی",
+    phoneNumber: "09121111111", // یکتا
+    email: "ali.m@example.com", // اختیاری و یکتا
+    isAdmin: true,
+    token: "admin-token-xyz",
+    cardNumber: "6037991000000001", // اختیاری و یکتا
+  },
+  {
+    firstName: "سارا",
+    lastName: "رضایی",
+    phoneNumber: "09122222222", // یکتا
+    email: "sara.r@example.com", // اختیاری و یکتا
+    isAdmin: false,
+    token: null,
+    cardNumber: "6037991000000002", // اختیاری و یکتا
+  },
+  {
+    firstName: "رضا",
+    lastName: "احمدی",
+    phoneNumber: "09123333333", // یکتا
+    email: null, // ایمیل ندارد
+    isAdmin: false,
+    token: "user-token-abc",
+    cardNumber: null, // شماره کارت ندارد
+  },
+  {
+    firstName: "مریم",
+    lastName: "صادقی",
+    phoneNumber: "09124444444", // یکتا
+    email: "maryam.s@example.com", // اختیاری و یکتا
+    isAdmin: false,
+    token: null,
+    cardNumber: null,
+  },
+  {
+    firstName: "کیان",
+    lastName: "مرادی",
+    phoneNumber: "09125555555", // یکتا
+    email: "kian.moradi@example.com", // اختیاری و یکتا
+    isAdmin: false,
+    token: "kian-token-123",
+    cardNumber: "6037991000000003", // اختیاری و یکتا
+  },
+];
+
 export async function main() {
-  console.log(`Start seeding ...`);
+  console.log(`Start seeding users based on current schema...`);
 
-  // داده‌های نمونه برای کاربران که می‌خواهیم در دیتابیس وجود داشته باشند
-  const usersToSeed = [
-    {
-      email: "alice@example.com",
-      name: "Alice Wonderland",
-    },
-    {
-      email: "bob@example.com",
-      name: "Bob The Builder",
-    },
-    {
-      email: "sara@example.com",
-      name: "Sara Conner",
-    },
-    {
-      email: "john.doe@example.com",
-      name: "John Doe",
-    },
-    {
-      email: "mike@example.com",
-      name: "Mike Newcomer",
-    },
-    {
-      email: "lisa@example.com", // یک کاربر جدید دیگر
-      name: "Lisa Code",
-    },
-  ];
-
-  // ۱. خواندن تمام ایمیل‌های موجود در جدول User
-  const existingUsers = await prisma.user.findMany({
+  // ۱. خواندن تمام شماره تلفن‌های موجود در جدول User
+  // phoneNumber یک فیلد الزامی و یکتا در مدل User شماست، پس برای بررسی مناسب است.
+  const existingUsersPhoneNumbers = await prisma.user.findMany({
     select: {
-      email: true, // فقط فیلد ایمیل را انتخاب می‌کنیم
+      phoneNumber: true, // فقط فیلد شماره تلفن را انتخاب می‌کنیم
     },
   });
 
-  // تبدیل لیست کاربران موجود به یک Set از ایمیل‌ها برای جستجوی سریع‌تر
-  const existingEmails = new Set(existingUsers.map((user) => user.email));
-  console.log("ایمیل‌های موجود در دیتابیس:", Array.from(existingEmails));
+  // تبدیل لیست کاربران موجود به یک Set از شماره تلفن‌ها برای جستجوی سریع‌تر
+  const existingPhones = new Set(
+    existingUsersPhoneNumbers.map((user) => user.phoneNumber)
+  );
 
-  // ۲. فیلتر کردن کاربرانی که ایمیلشان هنوز در دیتابیس وجود ندارد
+  console.log("شماره تلفن‌های موجود در دیتابیس:", Array.from(existingPhones));
+
+  // ۲. فیلتر کردن کاربرانی که شماره تلفنشان هنوز در دیتابیس وجود ندارد
   const newUsersToCreate = usersToSeed.filter(
-    (seedUser) => !existingEmails.has(seedUser.email)
+    (seedUser) => !existingPhones.has(seedUser.phoneNumber)
   );
 
   if (newUsersToCreate.length > 0) {
     console.log(
-      `کاربران جدید برای ایجاد:`,
-      newUsersToCreate.map((u) => u.email)
+      `کاربران جدید برای ایجاد (بر اساس phoneNumber):`,
+      newUsersToCreate.map(
+        (u) => `${u.firstName} ${u.lastName} (${u.phoneNumber})`
+      )
     );
+
     // ۳. ایجاد کاربران جدید با createMany
-    // skipDuplicates: true باعث می‌شود اگر به هر دلیلی (مثلاً اجرای همزمان)
-    // رکوردی با ایمیل تکراری در این بچ ایجاد شود، خطا ندهد و از آن رد شود.
-    // (با توجه به فیلترینگ بالا، این اتفاق نباید بیفتد مگر در شرایط خاص)
     try {
+      // داده‌ها را برای createMany آماده می‌کنیم.
+      // createdAt و updatedAt توسط Prisma به طور خودکار مدیریت می‌شوند.
+      // فیلدهای رابطه‌ای مانند otpId فعلاً null در نظر گرفته می‌شوند یا اصلاً ارسال نمی‌شوند.
+      const dataForCreateMany = newUsersToCreate.map((user) => ({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+        isAdmin: user.isAdmin || false, // اطمینان از وجود مقدار پیش‌فرض اگر در داده نمونه نباشد
+        token: user.token,
+        cardNumber: user.cardNumber,
+        // otpId: null, // در صورت نیاز
+      }));
+
       const createdResult = await prisma.user.createMany({
-        data: newUsersToCreate,
-        skipDuplicates: true, // مهم برای جلوگیری از خطا در صورت وجود ایمیل (هرچند فیلتر کردیم)
+        data: dataForCreateMany,
+        // skipDuplicates: true, // بسیار مهم برای جلوگیری از خطا در صورت وجود هرگونه constraint یکتا (phoneNumber, email, cardNumber)
       });
+
       console.log(
         `تعداد ${createdResult.count} کاربر جدید با موفقیت ایجاد شد.`
       );
@@ -72,15 +117,11 @@ export async function main() {
     }
   } else {
     console.log(
-      "هیچ کاربر جدیدی برای ایجاد وجود ندارد. تمام کاربران نمونه از قبل موجود هستند."
+      "هیچ کاربر جدیدی برای ایجاد وجود ندارد. تمام کاربران نمونه (بر اساس phoneNumber) از قبل موجود هستند."
     );
   }
 
-  // اگر می‌خواهید کاربرانی که در usersToSeed هستند ولی نامشان با دیتابیس فرق دارد را آپدیت کنید،
-  // باید یک منطق جداگانه برای آپدیت پیاده‌سازی کنید (مثلاً با یک حلقه و prisma.user.update).
-  // این اسکریپت فعلی فقط کاربران *جدید* را اضافه می‌کند.
-
-  console.log(`Seeding finished.`);
+  console.log(`User seeding finished.`);
 }
 
 main()

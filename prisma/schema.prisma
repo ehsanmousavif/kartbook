@@ -1,21 +1,75 @@
-// prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db" // مطمئن شوید این مسیر برای شما صحیح است
+}
 
 generator client {
   provider = "prisma-client-js"
-  // مسیر صحیح برای خروجی، نسبت به این فایل (schema.prisma)
-  output   = "./generated/prisma"
+  output   = "./generated/client" // اگر مسیر خروجی سفارشی می‌خواهید
 }
 
-datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-}
-
-// اولین مدل ما
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
+  id          Int     @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  phoneNumber String  @unique
+  email       String? @unique
+  isAdmin     Boolean @default(false)
+  token       String?
+  cardNumber  String? @unique
+  shabaNumber String? @unique //  فیلد جدید برای شماره شبا ۱۶ رقمی، اختیاری و یکتا
+
+  otp   Otp? @relation(fields: [otpId], references: [id])
+  otpId Int? @unique
+
+  wallet Wallet?
+  seller Seller?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Otp {
+  id        Int      @id @default(autoincrement())
+  code      String
+  expiresAt DateTime
+
+  user User?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("otps")
+}
+
+model Wallet {
+  id      Int   @id @default(autoincrement())
+  balance Float @default(0.0) // موجودی کیف پول
+
+  // رابطه یک-به-یک با User: هر کیف پول متعلق به یک کاربر است.
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique // کلید خارجی به جدول User
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("wallets")
+}
+
+model Seller {
+  id       Int    @id @default(autoincrement())
+  shopName String
+
+  // رابطه یک-به-یک با User: هر پروفایل فروشنده متعلق به یک کاربر است.
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique // کلید خارجی به جدول User
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sellers")
 }
