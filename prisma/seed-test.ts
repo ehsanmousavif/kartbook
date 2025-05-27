@@ -1,14 +1,11 @@
-import { PrismaClient, User } from "@prisma/client"; // User تایپ را هم ایمپورت می‌کنیم
+import { PrismaClient, User } from "@db"; // User تایپ را هم ایمپورت می‌کنیم
 
 // یک نمونه از PrismaClient ایجاد می‌کنیم
 const prisma = new PrismaClient();
 
 // داده‌های نمونه برای کاربران مطابق با مدل User شما
 // مهم: phoneNumber باید یکتا باشد. email و cardNumber هم اگر مقداردهی شوند، باید یکتا باشند.
-const usersToSeed: Omit<
-  User,
-  "id" | "createdAt" | "updatedAt" | "otpId" | "wallet" | "seller" | "otp"
->[] = [
+const usersToSeed = [
   // Omit برای این است که id و فیلدهای اتوماتیک یا رابطه‌ای را در داده‌های اولیه نخواهیم
   {
     firstName: "علی",
@@ -18,6 +15,7 @@ const usersToSeed: Omit<
     isAdmin: true,
     token: "admin-token-xyz",
     cardNumber: "6037991000000001", // اختیاری و یکتا
+    shabaNumber: "1111222233334444", // نمونه شبا ۱۶ رقمی، باید یکتا باشد
   },
   {
     firstName: "سارا",
@@ -27,6 +25,7 @@ const usersToSeed: Omit<
     isAdmin: false,
     token: null,
     cardNumber: "6037991000000002", // اختیاری و یکتا
+    shabaNumber: "5555666677778888", // نمونه شبا ۱۶ رقمی، باید یکتا باشد
   },
   {
     firstName: "رضا",
@@ -36,6 +35,7 @@ const usersToSeed: Omit<
     isAdmin: false,
     token: "user-token-abc",
     cardNumber: null, // شماره کارت ندارد
+    shabaNumber: null, // این کاربر شماره شبا ندارد
   },
   {
     firstName: "مریم",
@@ -45,6 +45,7 @@ const usersToSeed: Omit<
     isAdmin: false,
     token: null,
     cardNumber: null,
+    shabaNumber: "9999000011112222", // نمونه شبا ۱۶ رقمی، باید یکتا باشد
   },
   {
     firstName: "کیان",
@@ -54,6 +55,7 @@ const usersToSeed: Omit<
     isAdmin: false,
     token: "kian-token-123",
     cardNumber: "6037991000000003", // اختیاری و یکتا
+    shabaNumber: null, // این کاربر هم شماره شبا ندارد
   },
 ];
 
