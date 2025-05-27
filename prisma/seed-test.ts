@@ -103,6 +103,7 @@ export async function main() {
         isAdmin: user.isAdmin || false, // اطمینان از وجود مقدار پیش‌فرض اگر در داده نمونه نباشد
         token: user.token,
         cardNumber: user.cardNumber,
+        shabaNumber: user.shabaNumber,
         // otpId: null, // در صورت نیاز
       }));
 
