@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 // داده‌های نمونه برای کاربران مطابق با مدل User شما
 // مهم: phoneNumber باید یکتا باشد. email و cardNumber هم اگر مقداردهی شوند، باید یکتا باشند.
 const usersToSeed = [
-  // Omit برای این است که id و فیلدهای اتوماتیک یا رابطه‌ای را در داده‌های اولیه نخواهیم
   {
     firstName: "علی",
     lastName: "محمدی",
@@ -133,6 +132,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    // اتصال به دیتابیس را می‌بندیم
     await prisma.$disconnect();
   });

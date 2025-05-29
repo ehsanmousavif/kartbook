@@ -2,7 +2,6 @@
 
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
-import { Texturina } from "next/font/google";
 import { useState } from "react";
 
 export default function DomainInputForm() {

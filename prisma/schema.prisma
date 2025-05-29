@@ -17,7 +17,7 @@ model User {
   isAdmin     Boolean @default(false)
   token       String?
   cardNumber  String? @unique
-  shabaNumber String? @unique //  فیلد جدید برای شماره شبا ۱۶ رقمی، اختیاری و یکتا
+  shabaNumber String? @unique
 
   otp   Otp? @relation(fields: [otpId], references: [id])
   otpId Int? @unique

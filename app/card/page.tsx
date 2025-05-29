@@ -1,7 +1,8 @@
 "use client";
 import { Button } from "@heroui/button";
 import Link from "next/link";
-export default function Card() {
+
+export default function CardPage() {
   return (
     <div className="w-full h-[50vh] px-4  flex flex-col items-center justify-center gap-10 ">
       <div className=" w-full flex flex-col items-center gap-4">

@@ -1,11 +1,14 @@
 import { Button } from "@heroui/button";
 import { useState } from "react";
 import DomainInputForm from "./domin-input-form";
-interface Data {
-  CardNumber: string;
+
+interface data {
+  cardNumber: string;
+  firstName: string;
+  lastName: string;
 }
 
-export default function BankCard(data: { CardNumber: Data }) {
+export default function BankCard({ cardNumber, firstName, lastName }: data) {
   const [isChecked, setIsChecked] = useState(false);
   const [domin, setDomin] = useState(false);
   const [cardPic, setCardPic] = useState(true);
@@ -25,10 +28,9 @@ export default function BankCard(data: { CardNumber: Data }) {
                 height={30}
               />
             </div>
-
             {/* شماره کارت */}
             <div className="flex justify-between text-xl font-semibold tracking-widest mt-12 px-2">
-              <div>{data?.CardNumber}</div>
+              <div>{cardNumber}</div>
             </div>
 
             {/* شماره شبا */}
@@ -60,7 +62,9 @@ export default function BankCard(data: { CardNumber: Data }) {
 
             {/* نام صاحب کارت */}
             <div className="absolute bottom-4 left-5 text-sm text-neutral-200 font-medium">
-              کیری کون زاده
+              {firstName}
+              {lastName}
+              {JSON.stringify(firstName)}
             </div>
           </div>
           <div className="flex flex-row items-center gap-4 justify-end mt-4">
@@ -70,7 +74,7 @@ export default function BankCard(data: { CardNumber: Data }) {
               checked={isChecked}
               onChange={(e) => setIsChecked(e.target.checked)}
             />
-            <label htmlFor="agreeCheckbox">قبول دارم ممد زمانیان کونیه!</label>
+            <label htmlFor="agreeCheckbox">اطلاعات مطابقت دارد</label>
           </div>
           <Button
             color="primary"
