@@ -3,21 +3,11 @@
 import { Button } from "@heroui/button";
 import { useState } from "react";
 import useSWR from "swr";
-import BankCard from "./bank-card";
 import { Prisma } from "@db";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import BankCard from "./bank-card";
 
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  email: string | null;
-  cardNumber: string | null;
-  isAdmin: boolean;
-  createdAt: string;
-}
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function CreateCard() {
   const [cardNumbers, setCardNumbers] = useState<boolean>(true);
@@ -61,6 +51,7 @@ export default function CreateCard() {
             onPress={() => {
               if (!cardExists) {
                 alert("ریدی");
+
                 return;
               }
               setCardNumbers(false);

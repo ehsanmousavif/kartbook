@@ -1,4 +1,5 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["heroui", "کارت"]
+  "cSpell.words": ["heroui", "کارت"],
+  "files.eol": "\n"
 }

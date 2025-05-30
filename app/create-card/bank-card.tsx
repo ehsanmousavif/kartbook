@@ -1,5 +1,7 @@
 import { Button } from "@heroui/button";
 import { useState } from "react";
+import Image from "next/image";
+
 import DomainInputForm from "./domin-input-form";
 
 interface data {
@@ -10,7 +12,7 @@ interface data {
 
 export default function BankCard({ cardNumber, firstName, lastName }: data) {
   const [isChecked, setIsChecked] = useState(false);
-  const [domin, setDomin] = useState(false);
+  const [domain, setDomain] = useState(false);
   const [cardPic, setCardPic] = useState(true);
 
   return (
@@ -20,12 +22,12 @@ export default function BankCard({ cardNumber, firstName, lastName }: data) {
           <div className="w-[350px] h-[200px] rounded-2xl relative overflow-hidden bg-gradient-to-br from-gray-900 to-black shadow-2xl text-white p-5">
             {/* لوگو */}
             <div className="absolute top-4 right-4">
-              <img
-                src="/logo.png"
+              <Image
                 alt="bank logo"
                 className=" object-contain"
-                width={30}
                 height={30}
+                src="/logo.png"
+                width={30}
               />
             </div>
             {/* شماره کارت */}
@@ -38,16 +40,16 @@ export default function BankCard({ cardNumber, firstName, lastName }: data) {
               <span>IR680120010000008927398369</span>
               <Button
                 isIconOnly
+                className="text-white"
                 size="sm"
                 variant="light"
-                className="text-white"
               >
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
                   fill="none"
+                  height="18"
                   viewBox="0 0 24 24"
+                  width="18"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <g stroke="currentColor" strokeWidth="1.5">
                     <path d="M6 11c0-2.828 0-4.243.879-5.121C7.757 5 9.172 5 12 5h3c2.828 0 4.243 0 5.121.879C21 6.757 21 8.172 21 11v5c0 2.828 0 4.243-.879 5.121C19.243 22 17.828 22 15 22h-3c-2.828 0-4.243 0-5.121-.879C6 20.243 6 18.828 6 16z" />
@@ -69,9 +71,9 @@ export default function BankCard({ cardNumber, firstName, lastName }: data) {
           </div>
           <div className="flex flex-row items-center gap-4 justify-end mt-4">
             <input
-              type="checkbox"
-              id="agreeCheckbox"
               checked={isChecked}
+              id="agreeCheckbox"
+              type="checkbox"
               onChange={(e) => setIsChecked(e.target.checked)}
             />
             <label htmlFor="agreeCheckbox">اطلاعات مطابقت دارد</label>
@@ -80,7 +82,7 @@ export default function BankCard({ cardNumber, firstName, lastName }: data) {
             color="primary"
             isDisabled={!isChecked}
             onPress={() => {
-              setDomin(true);
+              setDomain(true);
               setCardPic(false);
             }}
           >
@@ -88,7 +90,7 @@ export default function BankCard({ cardNumber, firstName, lastName }: data) {
           </Button>
         </div>
       )}
-      {domin && (
+      {domain && (
         <div>
           <DomainInputForm />
         </div>

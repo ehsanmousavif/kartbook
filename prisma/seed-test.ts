@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@db"; // User تایپ را هم ایمپورت می‌کنیم
+import { PrismaClient } from "@db"; // User تایپ را هم ایمپورت می‌کنیم
 
 // یک نمونه از PrismaClient ایجاد می‌کنیم
 const prisma = new PrismaClient();
