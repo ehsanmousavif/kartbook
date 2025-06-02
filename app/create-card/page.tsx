@@ -1,74 +1,44 @@
 "use client";
 
-import { Button } from "@heroui/button";
-import { useState } from "react";
+import { createContext, useState } from "react";
+import CreateCards from "./create-card";
+import BankCard from "./bank-card";
+import DomainInputForm from "./domin-input-form";
 import useSWR from "swr";
 import { Prisma } from "@db";
 
-import BankCard from "./bank-card";
-
+// ساخت context ساده
+export const StepContext = createContext<any>("");
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function CreateCard() {
-  const [cardNumbers, setCardNumbers] = useState<boolean>(true);
-  const [bankCards, setBankCards] = useState<boolean>(false);
-  const [value, setValue] = useState("");
   const { data, error, isLoading } = useSWR<{
     success: true;
     data: Prisma.UserGetPayload<{ omit: { shabaNumber: true } }>[];
   }>("/api/users", fetcher);
+    const FindData = data?.data.find((item) => item.cardNumber);
+    const [existingData, setExistingData] = useState<Prisma.UserGetPayload<{
+    omit: { shabaNumber: true };
+  }> | null>(null);
 
-  function setInput(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.value);
-  }
-
-  if (error) return <p>خطا در دریافت داده‌ها</p>;
-  if (isLoading) return <p>در حال بارگذاری...</p>;
-  if (!data) return <p>داده‌ای دریافت نشد</p>;
-
-  // پیدا کردن کاربر بر اساس شماره کارت وارد شده
-  const cardExists = data.data.find((item) => item.cardNumber === value);
+  const [step, setStep] = useState<any>("enterCard");
 
   return (
-    <div>
-      {cardNumbers && (
-        <div className="w-full h-52 flex flex-col justify-center items-center gap-4">
-          <input
-            className="p-2 rounded-lg border border-gray-300"
-            maxLength={16}
-            type="text"
-            value={value}
-            onChange={setInput}
-          />
-          <div className="w-full px-4">
-            <p className="text-left text-sm font-medium">
-              شماره کارت شما: {value.replace(/(.{4})(?=.)/g, "$1-")}
-            </p>
-          </div>
-          <Button
-            color="primary"
-            isDisabled={value.length < 16}
-            onPress={() => {
-              if (!cardExists) {
-                alert("ریدی");
-
-                return;
-              }
-              setCardNumbers(false);
-              setBankCards(true);
-            }}
-          >
-            تایید
-          </Button>
-        </div>
-      )}
-      {bankCards && cardExists && (
-        <BankCard
-          cardNumber={cardExists.cardNumber ?? ""}
-          firstName={cardExists.firstName}
-          lastName={cardExists.lastName}
+    <StepContext.Provider value={{ step, setStep }}>
+      {step === "enterCard" && (
+        <CreateCards
+          data={data?.data ?? []}
+          onUserFound={(user) => setExistingData(user)}
         />
       )}
-    </div>
+      {step === "verifyCard" && existingData && (
+        <BankCard
+          cardNumber={existingData?.cardNumber ?? ""}
+          firstName={existingData?.firstName ?? ""}
+          lastName={existingData?.lastName ?? ""}
+        />
+      )}
+      {step === "enterDomain" && <DomainInputForm />}
+    </StepContext.Provider>
   );
 }
