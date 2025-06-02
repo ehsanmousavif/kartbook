@@ -1,6 +1,7 @@
 import { Button } from "@heroui/button";
 import { useContext, useState } from "react";
 import Image from "next/image";
+
 import { StepContext } from "./page";
 
 interface data {
@@ -10,7 +11,7 @@ interface data {
 }
 
 export default function BankCard({ cardNumber, firstName, lastName }: data) {
-  const { step, setStep } = useContext(StepContext);
+  const { setStep } = useContext(StepContext);
   const [isChecked, setIsChecked] = useState(false);
 
   return (
@@ -74,7 +75,6 @@ export default function BankCard({ cardNumber, firstName, lastName }: data) {
           isDisabled={!isChecked}
           onPress={() => {
             setStep("enterDomain");
-            
           }}
         >
           ارسال

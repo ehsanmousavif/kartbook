@@ -2,9 +2,9 @@
 
 import { Button } from "@heroui/button";
 import { useState, useContext } from "react";
-import { StepContext } from "./page";
-
 import { Prisma } from "@db";
+
+import { StepContext } from "./page";
 
 interface Userdata {
   data: Prisma.UserGetPayload<{
@@ -14,7 +14,7 @@ interface Userdata {
 }
 
 export default function CreateCards({ data, onUserFound }: Userdata) {
-  const { step, setStep } = useContext(StepContext);
+  const { setStep } = useContext(StepContext);
 
   const [value, setValue] = useState("");
   const dataCartNumber = data;

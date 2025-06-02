@@ -1,11 +1,12 @@
 "use client";
 
 import { createContext, useState } from "react";
+import { Prisma } from "@db";
+import useSWR from "swr";
+
 import CreateCards from "./create-card";
 import BankCard from "./bank-card";
 import DomainInputForm from "./domin-input-form";
-import useSWR from "swr";
-import { Prisma } from "@db";
 
 // ساخت context ساده
 export const StepContext = createContext<any>("");
@@ -20,6 +21,7 @@ export default function CreateCard() {
     omit: { shabaNumber: true };
   }> | null>(null);
 
+  console.log(error, isLoading);
   const [step, setStep] = useState<any>("enterCard");
 
   return (
