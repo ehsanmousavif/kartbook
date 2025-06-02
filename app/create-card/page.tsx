@@ -16,8 +16,7 @@ export default function CreateCard() {
     success: true;
     data: Prisma.UserGetPayload<{ omit: { shabaNumber: true } }>[];
   }>("/api/users", fetcher);
-    const FindData = data?.data.find((item) => item.cardNumber);
-    const [existingData, setExistingData] = useState<Prisma.UserGetPayload<{
+  const [existingData, setExistingData] = useState<Prisma.UserGetPayload<{
     omit: { shabaNumber: true };
   }> | null>(null);
 
