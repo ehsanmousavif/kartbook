@@ -1,6 +1,6 @@
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db" // مطمئن شوید این مسیر برای شما صحیح است
+  url      = "file:./dev.db"
 }
 
 generator client {
@@ -28,48 +28,44 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("users")
-}
-
-model Otp {
-  id        Int      @id @default(autoincrement())
   code      String
   expiresAt DateTime
 
-  user User?
+  @@map("users")
+}
+
+// (DEPOSIT) واریز، (WITHDRAWAL) برداشت
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+}
+
+model Transaction {
+  id     Int             @id @default(autoincrement())
+  amount Float // مبلغ تراکنش
+  type   TransactionType // نوع تراکنش (واریز یا برداشت)
+
+  // ایجاد رابطه با کیف پول
+  wallet   Wallet @relation(fields: [walletId], references: [id])
+  walletId Int
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  @@map("otps")
+  @@map("transactions")
 }
 
 model Wallet {
   id      Int   @id @default(autoincrement())
-  balance Float @default(0.0) // موجودی کیف پول
+  balance Float @default(0.0)
 
-  // رابطه یک-به-یک با User: هر کیف پول متعلق به یک کاربر است.
   user   User @relation(fields: [userId], references: [id])
-  userId Int  @unique // کلید خارجی به جدول User
+  userId Int  @unique
 
-  // Timestamps
+  // لیستی از تمام تراکنش‌های این کیف پول
+  transactions Transaction[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("wallets")
-}
-
-model Seller {
-  id       Int    @id @default(autoincrement())
-  shopName String
-
-  // رابطه یک-به-یک با User: هر پروفایل فروشنده متعلق به یک کاربر است.
-  user   User @relation(fields: [userId], references: [id])
-  userId Int  @unique // کلید خارجی به جدول User
-
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("sellers")
 }
