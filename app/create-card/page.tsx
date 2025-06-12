@@ -5,10 +5,8 @@ import { Prisma } from "@db";
 import useSWR from "swr";
 
 import CreateCards from "./create-card";
-import BankCard from "./bank-card";
 import DomainInputForm from "./domin-input-form";
 
-// ساخت context ساده
 export const StepContext = createContext<any>("");
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -30,13 +28,6 @@ export default function CreateCard() {
         <CreateCards
           data={data?.data ?? []}
           onUserFound={(user) => setExistingData(user)}
-        />
-      )}
-      {step === "verifyCard" && existingData && (
-        <BankCard
-          cardNumber={existingData?.cardNumber ?? ""}
-          firstName={existingData?.firstName ?? ""}
-          lastName={existingData?.lastName ?? ""}
         />
       )}
       {step === "enterDomain" && <DomainInputForm />}

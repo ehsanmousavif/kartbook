@@ -2,22 +2,31 @@
 
 import { Button } from "@heroui/button";
 import { useState, useContext } from "react";
-import { Prisma } from "@db";
+import { Prisma, User } from "@db";
+import { createContext } from "react";
 
 import { StepContext } from "./page";
 
-interface Userdata {
+import BankCard from "@/components/cards/bank-card";
+
+interface UserData {
   data: Prisma.UserGetPayload<{
     omit: { shabaNumber: true };
   }>[];
   onUserFound: (user: any) => void; // بعداً تایپشو درست می‌کنیم
 }
 
-export default function CreateCards({ data, onUserFound }: Userdata) {
+export const ValueContext = createContext<
+  | Prisma.UserGetPayload<{
+      select: { cardNumber: true };
+    }>
+  | any
+>(null);
+
+export default function CreateCards({ data, onUserFound }: UserData) {
   const { setStep } = useContext(StepContext);
 
   const [value, setValue] = useState("");
-  const dataCartNumber = data;
 
   function setInput(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
@@ -46,22 +55,29 @@ export default function CreateCards({ data, onUserFound }: Userdata) {
             شماره کارت شما: {value.replace(/(.{4})(?=.)/g, "$1-")}
           </p>
         </div>
-        <Button
-          color="primary"
-          isDisabled={value.length < 16}
-          onPress={() => {
-            if (!dataCartNumber) {
-              alert("ریدی");
-
-              return;
-            }
-            setStep("verifyCard");
-            onUserFound(user);
-          }}
-        >
-          تایید
-        </Button>
+        <ValueContext.Provider value={{ value, setValue }}>
+          <BankCard
+            cardNumber={user?.cardNumber ?? ""}
+            firstName={user?.firstName ?? ""}
+            lastName={user?.lastName ?? ""}
+          />{" "}
+        </ValueContext.Provider>
       </div>
+      <Button
+        color="primary"
+        isDisabled={value.length < 16}
+        onPress={() => {
+          if (!user) {
+            alert("ریدی");
+
+            return;
+          }
+          setStep("enterDomain");
+          onUserFound(user);
+        }}
+      >
+        تایید
+      </Button>
     </div>
   );
 }

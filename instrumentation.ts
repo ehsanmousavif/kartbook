@@ -1,5 +1,5 @@
 import { db } from "./lib/prisma";
-// import { main } from "./prisma/seed-test";
+// import { main } from "./prisma/banks-seed";
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {

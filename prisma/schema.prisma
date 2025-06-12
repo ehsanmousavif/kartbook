@@ -19,17 +19,13 @@ model User {
   cardNumber  String? @unique
   shabaNumber String? @unique
 
-  otp   Otp? @relation(fields: [otpId], references: [id])
-  otpId Int? @unique
-
   wallet Wallet?
-  seller Seller?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  code      String
-  expiresAt DateTime
+  code      String?
+  expiresAt DateTime?
 
   @@map("users")
 }
@@ -54,6 +50,13 @@ model Transaction {
   @@map("transactions")
 }
 
+model Bank {
+  id      Int    @id @default(autoincrement())
+  bin     String @unique // مثلاً 603799
+  logoUrl String
+  color   String
+}
+
 model Wallet {
   id      Int   @id @default(autoincrement())
   balance Float @default(0.0)
@@ -69,3 +72,5 @@ model Wallet {
 
   @@map("wallets")
 }
+
+///مدل دیتابیسشو ممد تویه کارتبوک زده باید پیدا کنمو طبق اون پیش برم

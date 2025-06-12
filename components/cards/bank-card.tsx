@@ -1,18 +1,22 @@
 import { Button } from "@heroui/button";
 import { useContext, useState } from "react";
+import useSWR from "swr";
 import Image from "next/image";
-
-import { StepContext } from "./page";
 
 interface data {
   cardNumber: string;
   firstName: string;
   lastName: string;
 }
+import { ValueContext } from "@/app/create-card/create-card";
 
-export default function BankCard({ cardNumber, firstName, lastName }: data) {
-  const { setStep } = useContext(StepContext);
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+export default function BankCard({ firstName, lastName }: data) {
+  const { data, isLoading, error } = useSWR({});
+
   const [isChecked, setIsChecked] = useState(false);
+  const { value } = useContext(ValueContext);
 
   return (
     <>
@@ -29,7 +33,7 @@ export default function BankCard({ cardNumber, firstName, lastName }: data) {
           </div>
           {/* شماره کارت */}
           <div className="flex justify-between text-xl font-semibold tracking-widest mt-12 px-2">
-            <div>{cardNumber}</div>
+            <div>{value}</div>
           </div>
 
           {/* شماره شبا */}
@@ -70,15 +74,6 @@ export default function BankCard({ cardNumber, firstName, lastName }: data) {
           />
           <label htmlFor="agreeCheckbox">اطلاعات مطابقت دارد</label>
         </div>
-        <Button
-          color="primary"
-          isDisabled={!isChecked}
-          onPress={() => {
-            setStep("enterDomain");
-          }}
-        >
-          ارسال
-        </Button>
       </div>
     </>
   );
