@@ -64,6 +64,7 @@ export default function CreateCards({ data, onUserFound }: UserData) {
         </ValueContext.Provider>
       </div>
       <Button
+      className="mt-16"
         color="primary"
         isDisabled={value.length < 16}
         onPress={() => {
